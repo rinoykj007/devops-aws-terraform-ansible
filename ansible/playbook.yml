@@ -2,36 +2,56 @@
 - name: Configure Web Server
   hosts: web
   become: yes
+  gather_facts: yes
 
   tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
     - name: Install required packages
       apt:
         name: "{{ item }}"
         state: present
-        update_cache: yes
       loop:
         - apt-transport-https
         - ca-certificates
         - curl
         - software-properties-common
+        - python3-pip
+        - python3-docker
 
-    - name: Add Docker GPG key
+    - name: Add Docker GPG apt Key
       apt_key:
         url: https://download.docker.com/linux/ubuntu/gpg
         state: present
 
-    - name: Add Docker repository
-      apt_repository:
-        repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
-        state: present
+    - name: Determine Ubuntu version
+      shell: lsb_release -cs
+      register: ubuntu_version
+      changed_when: false
 
-    - name: Install Docker CE
-      apt:
-        name: docker-ce
+    - name: Add Docker Repository
+      apt_repository:
+        repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ubuntu_version.stdout }} stable"
         state: present
         update_cache: yes
 
-    - name: Start and enable Docker service
+    - name: Install Docker CE
+      apt:
+        name: 
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+        state: present
+
+    - name: Install Docker Python package
+      pip:
+        name: docker
+        state: present
+
+    - name: Ensure Docker service is running
       service:
         name: docker
         state: started
@@ -48,28 +68,40 @@
         path: /app
         state: directory
         mode: '0755'
+        owner: ubuntu
+        group: ubuntu
 
-    - name: Copy index.html
+    - name: Copy web files
       copy:
-        src: ../app/index.html
-        dest: /app/index.html
-
-    - name: Copy Dockerfile
-      copy:
-        src: ../app/Dockerfile
-        dest: /app/Dockerfile
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        mode: '0644'
+        owner: ubuntu
+        group: ubuntu
+      loop:
+        - { src: '../app/index.html', dest: '/app/index.html' }
+        - { src: '../app/Dockerfile', dest: '/app/Dockerfile' }
 
     - name: Build Docker image
       docker_image:
-        name: webapp
+        name: webapp:latest
+        source: build
         build:
           path: /app
-        source: build
+          pull: yes
+        state: present
+        force_source: yes
+
+    - name: Stop existing container if running
+      docker_container:
+        name: webapp
+        state: absent
 
     - name: Run Docker container
       docker_container:
         name: webapp
-        image: webapp
+        image: webapp:latest
         state: started
         ports:
           - "80:80"
+        restart_policy: always
