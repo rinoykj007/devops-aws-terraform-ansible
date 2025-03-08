@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DevOps Project - Team Profile</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+    />
+    <style>
+      body {
+        background-color: #f8f9fa;
+      }
+      .profile-section {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      }
+      .tech-badge {
+        font-size: 0.9rem;
+        margin: 5px;
+      }
+      .project-card {
+        transition: transform 0.2s;
+      }
+      .project-card:hover {
+        transform: translateY(-5px);
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container">
+        <a class="navbar-brand" href="#">DevOps Portfolio</a>
+      </div>
+    </nav>
+
+    <div class="container py-5">
+      <!-- Project Overview -->
+      <div class="row mb-4">
+        <div class="col-lg-12">
+          <div class="profile-section p-4">
+            <h4>DevOps Project Overview</h4>
+            <p class="text-muted">
+              Automated Container Deployment and Administration in the Cloud
+            </p>
+            <hr />
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <div class="card project-card h-100">
+                  <div class="card-body">
+                    <h5 class="card-title">
+                      <i class="bi bi-cloud"></i> Infrastructure
+                    </h5>
+                    <p class="card-text">
+                      AWS EC2 instance provisioned using Terraform with
+                      automated configuration management via Ansible.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <div class="card project-card h-100">
+                  <div class="card-body">
+                    <h5 class="card-title">
+                      <i class="bi bi-box"></i> Containerization
+                    </h5>
+                    <p class="card-text">
+                      Dockerized web application with Nginx, implementing best
+                      practices for container security and efficiency.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <div class="card project-card h-100">
+                  <div class="card-body">
+                    <h5 class="card-title">
+                      <i class="bi bi-gear"></i> Automation
+                    </h5>
+                    <p class="card-text">
+                      Fully automated deployment pipeline with infrastructure as
+                      code and configuration management.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <div class="card project-card h-100">
+                  <div class="card-body">
+                    <h5 class="card-title">
+                      <i class="bi bi-shield-check"></i> Security
+                    </h5>
+                    <p class="card-text">
+                      Implemented security best practices including SSH key
+                      authentication and restricted access controls.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Project Status -->
+      <div class="row mb-4">
+        <div class="col-lg-12">
+          <div class="profile-section p-4">
+            <h4>Project Status</h4>
+            <div class="progress mb-3">
+              <div
+                class="progress-bar bg-success"
+                role="progressbar"
+                style="width: 100%"
+              >
+                Completed
+              </div>
+            </div>
+            <p class="mb-0">
+              <i class="bi bi-check-circle-fill text-success"></i>
+              Infrastructure Provisioning<br />
+              <i class="bi bi-check-circle-fill text-success"></i> Configuration
+              Management<br />
+              <i class="bi bi-check-circle-fill text-success"></i> Container
+              Deployment<br />
+              <i class="bi bi-check-circle-fill text-success"></i> Security
+              Implementation
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Team Members -->
+      <h4 class="mb-4">Team Members</h4>
+      <div class="row">
+        <!-- Team Member 1 -->
+        <div class="col-lg-3 col-md-6 mb-4">
+          <div class="profile-section p-4">
+            <div class="text-center mb-4">
+              <img
+                src="/api/placeholder/150/150"
+                class="rounded-circle mb-3"
+                alt="Team Member 1"
+              />
+              <h5>Team Member 1</h5>
+              <p class="text-muted">Infrastructure Lead</p>
+              <div class="d-flex justify-content-center gap-3">
+                <a href="#" class="text-dark"><i class="bi bi-github"></i></a>
+                <a href="#" class="text-dark"><i class="bi bi-linkedin"></i></a>
+                <a href="#" class="text-dark"><i class="bi bi-envelope"></i></a>
+              </div>
+            </div>
+            <div class="mb-4">
+              <h6>Technical Skills</h6>
+              <div>
+                <span class="badge bg-primary tech-badge">AWS</span>
+                <span class="badge bg-success tech-badge">Terraform</span>
+                <span class="badge bg-secondary tech-badge">Linux</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Team Member 2 -->
+        <div class="col-lg-3 col-md-6 mb-4">
+          <div class="profile-section p-4">
+            <div class="text-center mb-4">
+              <img
+                src="/api/placeholder/150/150"
+                class="rounded-circle mb-3"
+                alt="Team Member 2"
+              />
+              <h5>Team Member 2</h5>
+              <p class="text-muted">Configuration Specialist</p>
+              <div class="d-flex justify-content-center gap-3">
+                <a href="#" class="text-dark"><i class="bi bi-github"></i></a>
+                <a href="#" class="text-dark"><i class="bi bi-linkedin"></i></a>
+                <a href="#" class="text-dark"><i class="bi bi-envelope"></i></a>
+              </div>
+            </div>
+            <div class="mb-4">
+              <h6>Technical Skills</h6>
+              <div>
+                <span class="badge bg-warning text-dark tech-badge"
+                  >Ansible</span
+                >
+                <span class="badge bg-danger tech-badge">Git</span>
+                <span class="badge bg-secondary tech-badge">Linux</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Team Member 3 -->
+        <div class="col-lg-3 col-md-6 mb-4">
+          <div class="profile-section p-4">
+            <div class="text-center mb-4">
+              <img
+                src="/api/placeholder/150/150"
+                class="rounded-circle mb-3"
+                alt="Team Member 3"
+              />
+              <h5>Team Member 3</h5>
+              <p class="text-muted">Containerization Expert</p>
+              <div class="d-flex justify-content-center gap-3">
+                <a href="#" class="text-dark"><i class="bi bi-github"></i></a>
+                <a href="#" class="text-dark"><i class="bi bi-linkedin"></i></a>
+                <a href="#" class="text-dark"><i class="bi bi-envelope"></i></a>
+              </div>
+            </div>
+            <div class="mb-4">
+              <h6>Technical Skills</h6>
+              <div>
+                <span class="badge bg-info tech-badge">Docker</span>
+                <span class="badge bg-primary tech-badge">Kubernetes</span>
+                <span class="badge bg-danger tech-badge">Git</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Team Member 4 -->
+        <div class="col-lg-3 col-md-6 mb-4">
+          <div class="profile-section p-4">
+            <div class="text-center mb-4">
+              <img
+                src="/api/placeholder/150/150"
+                class="rounded-circle mb-3"
+                alt="Team Member 4"
+              />
+              <h5>Team Member 4</h5>
+              <p class="text-muted">Security Engineer</p>
+              <div class="d-flex justify-content-center gap-3">
+                <a href="#" class="text-dark"><i class="bi bi-github"></i></a>
+                <a href="#" class="text-dark"><i class="bi bi-linkedin"></i></a>
+                <a href="#" class="text-dark"><i class="bi bi-envelope"></i></a>
+              </div>
+            </div>
+            <div class="mb-4">
+              <h6>Technical Skills</h6>
+              <div>
+                <span class="badge bg-danger tech-badge">Security</span>
+                <span class="badge bg-primary tech-badge">AWS IAM</span>
+                <span class="badge bg-secondary tech-badge">Linux</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

@@ -1,0 +1,75 @@
+---
+- name: Configure Web Server
+  hosts: web
+  become: yes
+
+  tasks:
+    - name: Install required packages
+      apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+      loop:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - software-properties-common
+
+    - name: Add Docker GPG key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker repository
+      apt_repository:
+        repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+        state: present
+
+    - name: Install Docker CE
+      apt:
+        name: docker-ce
+        state: present
+        update_cache: yes
+
+    - name: Start and enable Docker service
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Add ubuntu user to docker group
+      user:
+        name: ubuntu
+        groups: docker
+        append: yes
+
+    - name: Create app directory
+      file:
+        path: /app
+        state: directory
+        mode: '0755'
+
+    - name: Copy index.html
+      copy:
+        src: ../app/index.html
+        dest: /app/index.html
+
+    - name: Copy Dockerfile
+      copy:
+        src: ../app/Dockerfile
+        dest: /app/Dockerfile
+
+    - name: Build Docker image
+      docker_image:
+        name: webapp
+        build:
+          path: /app
+        source: build
+
+    - name: Run Docker container
+      docker_container:
+        name: webapp
+        image: webapp
+        state: started
+        ports:
+          - "80:80"
