@@ -31,16 +31,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install ansible
 
-    # Direct Docker commands without any registry
-    - name: Build Docker image directly
-      run: |
-        cd app
-        ls -la
-        echo "Building Docker image..."
-        docker build . -t webapp:latest
-        echo "Docker image built successfully:"
-        docker images webapp:latest
-
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
 
