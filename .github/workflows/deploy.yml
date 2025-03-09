@@ -63,11 +63,16 @@ jobs:
     - name: Terraform Apply
       run: terraform apply -auto-approve
 
+    - name: Setup SSH key
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deployer-key
+        chmod 600 ~/.ssh/deployer-key
+        echo "StrictHostKeyChecking no" > ~/.ssh/config
+
     - name: Run Ansible Playbook
       run: |
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > deployer-key
-        chmod 600 deployer-key
-        ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ansible/inventory.ini ansible/playbook.yml
+        ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ansible/inventory.ini ansible/playbook.yml --private-key ~/.ssh/deployer-key
 
     - name: Verify Deployment
       run: |
