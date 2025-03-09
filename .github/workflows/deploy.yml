@@ -22,20 +22,20 @@ jobs:
         aws-region: eu-north-1
 
     - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v1
-
-    - name: Setup Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.x'
-
-    - name: Install Ansible
-      run: |
-        python -m pip install --upgrade pip
-        pip install ansible
+      uses: hashicorp/setup-terraform@v2
 
     - name: Terraform Init
+      id: init
       run: terraform init
+
+    - name: Terraform Plan
+      id: plan
+      run: terraform plan
+      continue-on-error: true
+
+    - name: Terraform Plan Status
+      if: steps.plan.outcome == 'failure'
+      run: exit 1
 
     - name: Terraform Apply
       run: terraform apply -auto-approve
@@ -50,4 +50,6 @@ jobs:
       run: |
         echo "Waiting for application to be available..."
         sleep 30
-        curl -f http://$(terraform output -raw public_ip)
+        PUBLIC_IP=$(terraform output -raw public_ip)
+        echo "Server IP: $PUBLIC_IP"
+        curl -f http://$PUBLIC_IP
