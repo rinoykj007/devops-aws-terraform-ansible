@@ -47,6 +47,17 @@ jobs:
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
 
+    - name: Terraform Format
+      id: fmt
+      run: terraform fmt -check
+      continue-on-error: true
+
+    - name: Terraform Format Status
+      if: steps.fmt.outcome == 'failure'
+      run: |
+        echo "Terraform files need formatting. Run 'terraform fmt' locally and commit changes."
+        exit 1
+
     - name: Terraform Init
       id: init
       run: terraform init
