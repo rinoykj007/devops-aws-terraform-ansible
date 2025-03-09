@@ -2,32 +2,80 @@ provider "aws" {
   region = "eu-north-1"
 }
 
-# Use data sources to reference existing resources
-data "aws_key_pair" "existing" {
-  key_name = "deployer-key-new"
+# Import existing key pair
+resource "aws_key_pair" "deployer" {
+  key_name   = "deployer-key-new"
+  public_key = file("deployer-key.pub")
+
+  lifecycle {
+    prevent_destroy = true
+    ignore_changes = [
+      public_key
+    ]
+  }
 }
 
+# Use default VPC
 data "aws_vpc" "default" {
   default = true
 }
 
-data "aws_security_group" "existing" {
-  name   = "web_server"
-  vpc_id = data.aws_vpc.default.id
+# Create security group
+resource "aws_security_group" "web_server" {
+  name        = "web_server"
+  description = "Allow SSH and HTTP traffic"
+  vpc_id      = data.aws_vpc.default.id
+
+  ingress {
+    description = "SSH from anywhere"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "HTTP from anywhere"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  lifecycle {
+    prevent_destroy = true
+  }
+
+  tags = {
+    Name = "web_server"
+  }
 }
 
+# Create EC2 instance
 resource "aws_instance" "web_server" {
   ami           = "ami-02e2af61198e99faf"
   instance_type = "t3.micro"
-  key_name      = data.aws_key_pair.existing.key_name
+  key_name      = aws_key_pair.deployer.key_name
 
-  vpc_security_group_ids = [data.aws_security_group.existing.id]
+  vpc_security_group_ids = [aws_security_group.web_server.id]
 
   tags = {
     Name = "DevOps_Ca1"
   }
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
+# Output the public IP
 output "public_ip" {
   value = aws_instance.web_server.public_ip
 }
