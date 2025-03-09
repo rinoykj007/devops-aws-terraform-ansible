@@ -41,8 +41,10 @@ jobs:
       with:
         context: ./app
         load: true
-        tags: webapp:latest
         push: false
+        tags: webapp:latest
+        no-cache: true
+        platforms: linux/amd64
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2

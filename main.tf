@@ -2,17 +2,9 @@ provider "aws" {
   region = "eu-north-1"
 }
 
-# Import existing key pair
-resource "aws_key_pair" "deployer" {
-  key_name   = "deployer-key-new"
-  public_key = file("deployer-key.pub")
-
-  lifecycle {
-    prevent_destroy = true
-    ignore_changes = [
-      public_key
-    ]
-  }
+# Use existing key pair
+data "aws_key_pair" "existing" {
+  key_name = "deployer-key-new"
 }
 
 # Use default VPC
@@ -62,7 +54,7 @@ resource "aws_security_group" "web_server" {
 resource "aws_instance" "web_server" {
   ami           = "ami-02e2af61198e99faf"
   instance_type = "t3.micro"
-  key_name      = aws_key_pair.deployer.key_name
+  key_name      = data.aws_key_pair.existing.key_name
 
   vpc_security_group_ids = [aws_security_group.web_server.id]
 
