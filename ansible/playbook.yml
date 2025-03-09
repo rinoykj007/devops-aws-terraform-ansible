@@ -21,20 +21,16 @@
         - software-properties-common
         - python3-pip
         - python3-docker
+        - awscli
 
     - name: Add Docker GPG apt Key
       apt_key:
         url: https://download.docker.com/linux/ubuntu/gpg
         state: present
 
-    - name: Determine Ubuntu version
-      shell: lsb_release -cs
-      register: ubuntu_version
-      changed_when: false
-
     - name: Add Docker Repository
       apt_repository:
-        repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ubuntu_version.stdout }} stable"
+        repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
         state: present
         update_cache: yes
 
@@ -57,50 +53,35 @@
         state: started
         enabled: yes
 
-    - name: Add ubuntu user to docker group
-      user:
-        name: ubuntu
-        groups: docker
-        append: yes
-
     - name: Create app directory
       file:
         path: /app
         state: directory
         mode: '0755'
-        owner: ubuntu
-        group: ubuntu
 
     - name: Copy web files
       copy:
         src: "{{ item.src }}"
         dest: "{{ item.dest }}"
         mode: '0644'
-        owner: ubuntu
-        group: ubuntu
       loop:
         - { src: '../app/index.html', dest: '/app/index.html' }
         - { src: '../app/Dockerfile', dest: '/app/Dockerfile' }
 
-    - name: Build Docker image
-      docker_image:
-        name: webapp:latest
-        source: build
-        build:
-          path: /app
-          pull: yes
-        state: present
-        force_source: yes
+    - name: Configure AWS credentials
+      shell: |
+        aws configure set aws_access_key_id "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
+        aws configure set aws_secret_access_key "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
+        aws configure set region eu-west-1
 
-    - name: Stop existing container if running
+    - name: Login to ECR
+      shell: |
+        aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin {{ lookup('env', 'ECR_REGISTRY') }}
+
+    - name: Pull and run Docker container
       docker_container:
         name: webapp
-        state: absent
-
-    - name: Run Docker container
-      docker_container:
-        name: webapp
-        image: webapp:latest
+        image: "{{ lookup('env', 'ECR_REGISTRY') }}/webapp:latest"
         state: started
         ports:
           - "80:80"
