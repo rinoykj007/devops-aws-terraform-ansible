@@ -12,7 +12,7 @@ data "aws_vpc" "default" {
 }
 
 data "aws_security_group" "existing" {
-  name = "web_server"
+  name   = "web_server"
   vpc_id = data.aws_vpc.default.id
 }
 
