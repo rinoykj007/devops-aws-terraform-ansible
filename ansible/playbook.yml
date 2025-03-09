@@ -67,13 +67,11 @@
         - { src: '../app/index.html', dest: '/app/index.html' }
         - { src: '../app/Dockerfile', dest: '/app/Dockerfile' }
 
-    - name: Build and run Docker container
+    - name: Pull and run Docker container
       docker_container:
         name: webapp
-        image: nginx:alpine
+        image: rinoykj/webapp:latest
         state: started
         ports:
           - "80:80"
-        volumes:
-          - /app/index.html:/usr/share/nginx/html/index.html:ro
         restart_policy: always
