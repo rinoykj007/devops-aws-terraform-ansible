@@ -4,8 +4,8 @@ provider "aws" {
 
 # Create a key pair
 resource "aws_key_pair" "deployer" {
-  key_name   = "deployer-key"
-  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDgkn45LLbtyD6g0/fEjrDoCOaTLaAwQwdq98aJn0MWvquIMzWN016D+ZkQH1N04jdG+wXg+Gu6lH6Q9QQX9fpzplnnLhiAjKFm5yayDJ5X7v8XhfVT8rD3q6nVXUtME8A0wtppQHq9ERjG51JeWmO2wqblqbgCiGSwnrKM/Ew+RS8qJuGewA940JnquRKrT/Ui2h/ak6d7/MpS2lOflOTRj+zX/A/iTVSps1ZHmTtGHfAbp+lfPfAF7rtatPRTAAc742uJk76HmV2KMknB/vD93FY9KXsQMyYIPaZf5SqyU1e+RZ0hyYn/53zjQJ+t5nuEhUJtAiqE0ofFmRBa5Rqr devops@example.com"
+  key_name   = "deployer-key-new"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCQJKVvujwjW6BkikXtQvuVDylq+1YooavI3bTdb4XlsTvOq4K2qwQ4APOyuqj5tgdApdL6vWqfvgbzgJmEPGfFBb+qcKPmAD3l4JY+Io27Rp0V8YT340+2B30r2B5gXst62/yWhPmc2G+eYZTIoI/+FlaYS8YcK806Bd2qHF1/xXGRAKlDA7+8+RocTNsx1V774dFypOPwxx5TWohlNkPJkfFZ3UNheduH4u7TR6xMZAW+qIFfI/iB2ixPim6+NX6Do7eo041WaEkGvO4JiUbSOL2JCX3ZnOxunU7wJ+FSwHcHeBboNeby9ffrR8MjHcM18Wp2VN0WZSYlb3etAL2z root@RKJ"
 }
 
 resource "aws_instance" "web_server" {

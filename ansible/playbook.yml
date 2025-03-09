@@ -1,6 +1,6 @@
 ---
 - name: Configure Web Server
-  hosts: web
+  hosts: webservers
   become: yes
   gather_facts: yes
 
