@@ -21,7 +21,6 @@
         - software-properties-common
         - python3-pip
         - python3-docker
-        - awscli
 
     - name: Add Docker GPG apt Key
       apt_key:
@@ -68,21 +67,13 @@
         - { src: '../app/index.html', dest: '/app/index.html' }
         - { src: '../app/Dockerfile', dest: '/app/Dockerfile' }
 
-    - name: Configure AWS credentials
-      shell: |
-        aws configure set aws_access_key_id "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
-        aws configure set aws_secret_access_key "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
-        aws configure set region eu-west-1
-
-    - name: Login to ECR
-      shell: |
-        aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin {{ lookup('env', 'ECR_REGISTRY') }}
-
-    - name: Pull and run Docker container
+    - name: Build and run Docker container
       docker_container:
         name: webapp
-        image: "{{ lookup('env', 'ECR_REGISTRY') }}/webapp:latest"
+        image: nginx:alpine
         state: started
         ports:
           - "80:80"
+        volumes:
+          - /app/index.html:/usr/share/nginx/html/index.html:ro
         restart_policy: always
