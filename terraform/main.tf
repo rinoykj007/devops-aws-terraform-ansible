@@ -2,10 +2,9 @@ provider "aws" {
   region = "eu-west-1"
 }
 
-# Create key pair
-resource "aws_key_pair" "deployer" {
-  key_name   = "deployer-key-new"
-  public_key = file("${path.module}/deployer-key-new.pub")
+# Use existing key pair
+data "aws_key_pair" "existing" {
+  key_name = "deployer-key-new"
 }
 
 # Use default VPC
@@ -55,7 +54,7 @@ resource "aws_security_group" "web_server" {
 resource "aws_instance" "web_server" {
   ami           = "ami-0694d931cee176e7d"  # Amazon Linux 2 AMI in eu-west-1
   instance_type = "t3.micro"
-  key_name      = aws_key_pair.deployer.key_name
+  key_name      = data.aws_key_pair.existing.key_name
 
   vpc_security_group_ids = [aws_security_group.web_server.id]
 
