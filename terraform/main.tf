@@ -2,9 +2,10 @@ provider "aws" {
   region = "eu-west-1"
 }
 
-# Use existing key pair
-data "aws_key_pair" "existing" {
-  key_name = "deployer-key-new"
+# Create key pair
+resource "aws_key_pair" "deployer" {
+  key_name   = "deployer-key-new"
+  public_key = file("${path.module}/deployer-key-new.pub")
 }
 
 # Use default VPC
@@ -12,11 +13,10 @@ data "aws_vpc" "default" {
   default = true
 }
 
-# Create security group
+# Import existing security group
 resource "aws_security_group" "web_server" {
   name        = "web_server"
   description = "Allow SSH and HTTP traffic"
-  vpc_id      = data.aws_vpc.default.id
 
   ingress {
     description = "SSH from anywhere"
@@ -44,18 +44,28 @@ resource "aws_security_group" "web_server" {
   tags = {
     Name = "web_server"
   }
+
+  # Prevent recreation of existing security group
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
-# Create EC2 instance
+# Import existing EC2 instance
 resource "aws_instance" "web_server" {
   ami           = "ami-0694d931cee176e7d"  # Amazon Linux 2 AMI in eu-west-1
   instance_type = "t3.micro"
-  key_name      = data.aws_key_pair.existing.key_name
+  key_name      = aws_key_pair.deployer.key_name
 
   vpc_security_group_ids = [aws_security_group.web_server.id]
 
   tags = {
     Name = "DevOps_Ca1"
+  }
+
+  # Prevent recreation of existing instance
+  lifecycle {
+    prevent_destroy = true
   }
 }
 
