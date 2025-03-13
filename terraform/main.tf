@@ -64,8 +64,9 @@ resource "aws_instance" "web_server" {
     prevent_destroy = true
     ignore_changes = [
       ami,
-      key_name,
-      tags
+      tags,
+      vpc_security_group_ids,
+      key_name
     ]
   }
 }
