@@ -81,17 +81,17 @@ jobs:
       - name: Set up SSH key
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deployer-key-new
+          chmod 600 ~/.ssh/deployer-key-new
           ssh-keyscan -t rsa,ecdsa 18.203.98.63 2>/dev/null >> ~/.ssh/known_hosts || true
 
       - name: Create dynamic inventory
         run: |
           cd ansible
           echo "[webserver]" > inventory.yml
-          echo "${{ env.EC2_PUBLIC_IP }} ansible_user=ec2-user ansible_ssh_private_key_file=~/.ssh/id_rsa" >> inventory.yml
+          echo "${{ env.EC2_PUBLIC_IP }} ansible_user=ec2-user ansible_ssh_private_key_file=~/.ssh/deployer-key-new" >> inventory.yml
           echo "[all:vars]" >> inventory.yml
-          echo "ansible_ssh_common_args='-o StrictHostKeyChecking=no'" >> inventory.yml
+          echo "ansible_ssh_common_args='-o StrictHostKeyChecking=no -o IdentitiesOnly=yes'" >> inventory.yml
 
       - name: Run Ansible playbook
         run: |
