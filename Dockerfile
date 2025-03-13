@@ -12,6 +12,7 @@ RUN apt-get update && \
     gnupg \
     software-properties-common \
     wget \
+    lsb-release \
     && rm -rf /var/lib/apt/lists/*
 
 # Install AWS CLI
