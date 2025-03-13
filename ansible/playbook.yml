@@ -1,0 +1,67 @@
+---
+- name: Configure Web Server
+  hosts: webserver
+  become: yes
+  tasks:
+    - name: Update all packages
+      yum:
+        name: '*'
+        state: latest
+        update_only: yes
+
+    - name: Install required packages
+      yum:
+        name:
+          - httpd
+          - git
+        state: present
+
+    - name: Start and enable Apache
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+
+    - name: Allow Apache through firewall
+      firewalld:
+        service: http
+        permanent: yes
+        state: enabled
+      ignore_errors: yes  # Skip if firewalld is not installed
+
+    - name: Create web content directory
+      file:
+        path: /var/www/html
+        state: directory
+        mode: '0755'
+
+    - name: Create index page
+      copy:
+        content: |
+          <!DOCTYPE html>
+          <html>
+          <head>
+              <title>DevOps CA1</title>
+              <style>
+                  body {
+                      font-family: Arial, sans-serif;
+                      margin: 40px;
+                      text-align: center;
+                  }
+                  h1 {
+                      color: #333;
+                  }
+              </style>
+          </head>
+          <body>
+              <h1>Welcome to DevOps CA1</h1>
+              <p>Infrastructure successfully deployed with:</p>
+              <ul style="list-style: none; padding: 0;">
+                  <li>✅ AWS EC2</li>
+                  <li>✅ Terraform</li>
+                  <li>✅ Ansible</li>
+                  <li>✅ GitHub Actions</li>
+              </ul>
+          </body>
+          </html>
+        dest: /var/www/html/index.html
