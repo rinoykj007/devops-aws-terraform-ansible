@@ -2,17 +2,7 @@ provider "aws" {
   region = "eu-west-1"
 }
 
-# Use existing key pair
-data "aws_key_pair" "existing" {
-  key_name = "deployer-key-new"
-}
-
-# Use default VPC
-data "aws_vpc" "default" {
-  default = true
-}
-
-# Import existing security group
+# Use existing security group
 resource "aws_security_group" "web_server" {
   name        = "web_server"
   description = "Allow SSH and HTTP traffic"
@@ -47,14 +37,17 @@ resource "aws_security_group" "web_server" {
   # Prevent recreation of existing security group
   lifecycle {
     prevent_destroy = true
+    ignore_changes = [
+      description,
+      tags
+    ]
   }
 }
 
-# Import existing EC2 instance
+# Use existing EC2 instance
 resource "aws_instance" "web_server" {
   ami           = "ami-0694d931cee176e7d"  # Amazon Linux 2 AMI in eu-west-1
   instance_type = "t3.micro"
-  key_name      = data.aws_key_pair.existing.key_name
 
   vpc_security_group_ids = [aws_security_group.web_server.id]
 
@@ -65,6 +58,11 @@ resource "aws_instance" "web_server" {
   # Prevent recreation of existing instance
   lifecycle {
     prevent_destroy = true
+    ignore_changes = [
+      ami,
+      key_name,
+      tags
+    ]
   }
 }
 
