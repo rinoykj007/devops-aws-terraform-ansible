@@ -1,5 +1,5 @@
-﻿provider "aws" {
-  region = "eu-north-1"
+provider "aws" {
+  region = "eu-west-1"
 }
 
 # Use existing key pair
@@ -48,7 +48,7 @@ resource "aws_security_group" "web_server" {
 
 # Create EC2 instance
 resource "aws_instance" "web_server" {
-  ami           = "ami-02e2af61198e99faf"  # Amazon Linux 2 AMI in eu-north-1
+  ami           = "ami-0694d931cee176e7d"  # Amazon Linux 2 AMI in eu-west-1
   instance_type = "t3.micro"
   key_name      = data.aws_key_pair.existing.key_name
 
